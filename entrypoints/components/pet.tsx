@@ -2,15 +2,46 @@ import { useState, useEffect, useRef } from "react";
 
 import walkChicken from "@/assets/animals/chicken/walk.gif";
 import standChicken from "@/assets/animals/chicken/stand.gif";
-import chickenAttrs from '@/assets/animals/chicken/attr.json'
+import chickenAttrs from "@/assets/animals/chicken/attr.json";
 
-const {petWidth, petHeight, speed} = chickenAttrs;
-const Pet = () => {
+const { petWidth, petHeight, speed } = chickenAttrs;
+
+// 根据宠物类型获取资源（暂时所有宠物都使用 chicken 的资源）
+const getPetResources = (petType: string) => {
+  // 暂时所有宠物都使用 chicken 的资源
+  return {
+    walk: walkChicken,
+    stand: standChicken,
+    attrs: chickenAttrs,
+  };
+};
+
+const Pet = ({
+  initPosition = {
+    left: 0,
+    bottom: 0,
+    direction: "right",
+  },
+  petType = "chicken",
+  onDelete,
+}: {
+  initPosition: {
+    left: number;
+    bottom: number;
+    direction: "left" | "right" | string;
+  };
+  petType?: string;
+  onDelete?: () => void;
+}) => {
+  const resources = getPetResources(petType);
   // 移动方向
-  const [direction, setDirection] = useState("right"); // left | right
+  const [direction, setDirection] = useState(initPosition.direction); // left | right
   const [isMoving, setIsMoving] = useState(true);
 
-  const positionRef = useRef({ left: 0, bottom: 0 });
+  const positionRef = useRef({
+    left: initPosition.left,
+    bottom: initPosition.bottom,
+  });
   const lastTimeRef = useRef<number | null>(null);
   const animationFrameIdRef = useRef<number | null>(null);
 
@@ -61,6 +92,13 @@ const Pet = () => {
 
   const [position, setPosition] = useState(positionRef.current);
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault(); // 阻止默认右键菜单
+    if (onDelete) {
+      onDelete();
+    }
+  };
+
   return (
     <div
       id="pet"
@@ -75,9 +113,10 @@ const Pet = () => {
         pointerEvents: "auto",
       }}
       onClick={() => setIsMoving(!isMoving)}
+      onContextMenu={handleContextMenu}
     >
       <img
-        src={isMoving ? walkChicken : standChicken}
+        src={isMoving ? resources.walk : resources.stand}
         alt="pet"
         style={{ width: "100%", height: "100%" }}
       />

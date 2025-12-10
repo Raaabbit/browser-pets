@@ -1,42 +1,337 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.popup-container {
+  width: 420px;
+  min-height: 400px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+.popup-header {
+  padding: 20px 20px 12px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.popup-title {
+  margin: 0 0 6px 0;
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.title-icon {
+  font-size: 24px;
+}
+
+.popup-subtitle {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.9;
+  font-weight: 400;
+}
+
+.category-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.category-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.category-tab:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.category-tab.active {
+  background: rgba(255, 255, 255, 0.25);
+  font-weight: 600;
+}
+
+.category-emoji {
+  font-size: 16px;
+}
+
+.pets-grid {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: start;
+  overflow-y: auto;
+  max-height: 380px;
+  /* 隐藏滚动条 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.pets-grid::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.pet-card {
+  flex: 0 0 auto;
+  width: 120px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  text-align: center;
+  color: #333;
+}
+
+.pet-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+}
+
+.pet-card:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+.pet-card-clicked {
+  animation: petClickAnimation 0.5s ease-out;
+}
+
+@keyframes petClickAnimation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pet-emoji {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.pet-image-wrapper {
+  width: 60px;
+  height: 60px;
+  margin: 6px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 10px;
+  padding: 6px;
+}
+
+.pet-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.pet-name {
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 8px;
+  color: #2d3748;
+}
+
+.pet-hint {
+  font-size: 10px;
+  color: #718096;
+  margin-top: 4px;
+  opacity: 0.7;
+}
+
+.popup-footer {
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.2);
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #54bc4ae0);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.coming-soon {
+  font-size: 13px;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 
-@keyframes logo-spin {
+.coming-soon-icon {
+  font-size: 16px;
+}
+
+.footer-hint {
+  font-size: 11px;
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.settings-section {
+  margin-bottom: 12px;
+}
+
+.action-buttons {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.clear-all-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: rgba(239, 68, 68, 0.9);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.clear-all-btn:hover {
+  background: rgba(239, 68, 68, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+}
+
+.clear-all-btn:active {
+  transform: translateY(0);
+}
+
+.clear-icon {
+  font-size: 14px;
+}
+
+.settings-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+  font-size: 13px;
+  user-select: none;
+}
+
+.settings-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.settings-icon {
+  font-size: 16px;
+}
+
+.settings-arrow {
+  font-size: 10px;
+  transition: transform 0.3s;
+  margin-left: auto;
+}
+
+.settings-arrow.open {
+  transform: rotate(180deg);
+}
+
+.settings-content {
+  margin-top: 8px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(-10px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.settings-item {
+  margin-bottom: 0;
 }
 
-.card {
-  padding: 2em;
+.settings-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  opacity: 0.9;
 }
 
-.read-the-docs {
-  color: #888;
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.radio-group.horizontal {
+  flex-direction: row;
+  gap: 12px;
+  justify-content: center;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  font-size: 12px;
+}
+
+.radio-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.radio-option input[type="radio"] {
+  margin: 0;
+  cursor: pointer;
+  accent-color: #ffffff;
+}
+
+.radio-option span {
+  flex: 1;
 }

@@ -1,30 +1,266 @@
 /*
  * @Author: yhyang001 yhyang001@mail.nfsq.com.cn
  * @Date: 2025-03-05 23:02:40
- * @LastEditors: yhyang001 yhyang001@mail.nfsq.com.cn
- * @LastEditTime: 2025-03-06 17:55:10
+ * @LastEditors: Raaabbit Raaabbit@users.noreply.github.com
+ * @LastEditTime: 2025-04-27 18:52:29
  * @FilePath: /pets/src/entrypoints/popup/App.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 
+import { useState, useEffect } from "react";
 import chicken from "@/assets/animals/chicken/stand.gif";
+import "./App.css";
+
+// 宠物分类数据
+const petCategories = [
+  {
+    id: "cat",
+    name: "猫",
+    pets: [
+      { name: "白猫", nameEn: "white-cat", img: chicken },
+      { name: "黑猫", nameEn: "black-cat", img: chicken },
+      { name: "花猫", nameEn: "calico-cat", img: chicken },
+      { name: "橘猫", nameEn: "orange-cat", img: chicken },
+    ],
+  },
+  {
+    id: "dog",
+    name: "狗",
+    pets: [
+      { name: "金毛", nameEn: "golden-retriever", img: chicken },
+      { name: "柯基", nameEn: "corgi", img: chicken },
+      { name: "柴犬", nameEn: "shiba", img: chicken },
+      { name: "田园犬", nameEn: "mixed-dog", img: chicken },
+    ],
+  },
+  {
+    id: "bird",
+    name: "鸟",
+    pets: [
+      { name: "鸡", nameEn: "chicken", img: chicken },
+      { name: "柯尔鸭", nameEn: "call-duck", img: chicken },
+    ],
+  },
+];
+
+const allPets = [
+  {
+    id: "all",
+    name: "所有",
+    pets: petCategories.map((category) => category.pets).flat(),
+  },
+  ...petCategories,
+];
+
+type StorageMode = "global" | "per-site";
 
 function App() {
+  const [clickedPet, setClickedPet] = useState<string | null>(null);
+  const [storageMode, setStorageMode] = useState<StorageMode>("global");
+  const [showSettings, setShowSettings] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>("cat");
+
+  // 加载设置
+  useEffect(() => {
+    browser.storage.local.get("storage-mode").then((result) => {
+      if (result["storage-mode"]) {
+        setStorageMode(result["storage-mode"]);
+      }
+    });
+  }, []);
+
+  // 保存设置
+  const handleStorageModeChange = async (mode: StorageMode) => {
+    setStorageMode(mode);
+    await browser.storage.local.set({ "storage-mode": mode });
+    // 通知所有标签页重新加载宠物
+    browser.tabs.query({}).then((tabs) => {
+      tabs.forEach((tab) => {
+        if (tab.id) {
+          browser.tabs
+            .sendMessage(tab.id, {
+              action: "reload-pets",
+            })
+            .catch(() => {});
+        }
+      });
+    });
+  };
+
+  const handlePetClick = async (pet: {
+    name: string;
+    nameEn: string;
+    img: string;
+  }) => {
+    try {
+      await browser.runtime.sendMessage({
+        action: "create-pet",
+        pet: {
+          name: pet.nameEn,
+          img: pet.img,
+        },
+      });
+      setClickedPet(pet.nameEn);
+      setTimeout(() => setClickedPet(null), 500);
+    } catch (error) {
+      console.log("Message sent to background");
+    }
+  };
+
+  // 清除所有宠物
+  const handleClearAllPets = async () => {
+    if (!confirm("确定要清除所有宠物吗？此操作不可恢复。")) {
+      return;
+    }
+
+    try {
+      // 获取当前存储模式
+      const result = await browser.storage.local.get("storage-mode");
+      const mode = result["storage-mode"] || "global";
+
+      if (mode === "global") {
+        // 清除全局存储
+        await browser.storage.local.remove("global-pets");
+      } else {
+        // 清除所有按网站存储的宠物
+        const allData = await browser.storage.local.get(null);
+        const keysToRemove = Object.keys(allData).filter((key) =>
+          key.startsWith("pets-")
+        );
+        if (keysToRemove.length > 0) {
+          await browser.storage.local.remove(keysToRemove);
+        }
+      }
+
+      // 通知所有标签页重新加载
+      browser.tabs.query({}).then((tabs) => {
+        tabs.forEach((tab) => {
+          if (tab.id) {
+            browser.tabs
+              .sendMessage(tab.id, {
+                action: "reload-pets",
+              })
+              .catch(() => {});
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Failed to clear pets:", error);
+    }
+  };
+
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <div>
-        <img src={chicken} />
+    <div className="popup-container">
+      <div className="popup-header">
+        <h1
+          className="popup-title"
+          onClick={() => {
+            console.log("open options page", chrome.runtime.openOptionsPage);
+            if (chrome.runtime.openOptionsPage) {
+              chrome.runtime.openOptionsPage();
+            } else {
+              window.open(chrome.runtime.getURL("options.html"));
+            }
+          }}
+        >
+          <span className="title-icon">🐾</span>
+          Browser Pets
+        </h1>
+        <p className="popup-subtitle">点击添加宠物</p>
       </div>
-      <div style={{ fontSize: 16 }}>更多宠物即将加入</div>
+
+      <div className="category-tabs">
+        {allPets.map((category) => (
+          <button
+            key={category.id}
+            className={`category-tab ${
+              selectedCategory === category.id ? "active" : ""
+            }`}
+            onClick={() => setSelectedCategory(category.id)}
+          >
+            <span>{category.name}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="pets-grid">
+        {allPets
+          .find((cat) => cat.id === selectedCategory)
+          ?.pets.map((pet, index) => {
+            const isClicked = clickedPet === pet.nameEn;
+            return (
+              <div
+                key={index}
+                className={`pet-card ${isClicked ? "pet-card-clicked" : ""}`}
+                onClick={() => handlePetClick(pet)}
+              >
+                <div className="pet-image-wrapper">
+                  <img src={pet.img} alt={pet.name} className="pet-image" />
+                </div>
+                <div className="pet-name">{pet.name}</div>
+              </div>
+            );
+          })}
+      </div>
+
+      <div className="popup-footer">
+        <div className="settings-section">
+          <div
+            className="settings-toggle"
+            onClick={() => setShowSettings(!showSettings)}
+          >
+            <span className="settings-icon">⚙️</span>
+            <span>设置</span>
+            <span className={`settings-arrow ${showSettings ? "open" : ""}`}>
+              ▼
+            </span>
+          </div>
+          {showSettings && (
+            <div className="settings-content">
+              <div className="settings-item">
+                <label className="settings-label">存储方式</label>
+                <div className="radio-group horizontal">
+                  <label className="radio-option">
+                    <input
+                      type="radio"
+                      name="storage-mode"
+                      value="global"
+                      checked={storageMode === "global"}
+                      onChange={(e) =>
+                        handleStorageModeChange(e.target.value as StorageMode)
+                      }
+                    />
+                    <span>所有页面统一</span>
+                  </label>
+                  <label className="radio-option">
+                    <input
+                      type="radio"
+                      name="storage-mode"
+                      value="per-site"
+                      checked={storageMode === "per-site"}
+                      onChange={(e) =>
+                        handleStorageModeChange(e.target.value as StorageMode)
+                      }
+                    />
+                    <span>按网站存储</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="action-buttons">
+          <button className="clear-all-btn" onClick={handleClearAllPets}>
+            <span className="clear-icon">🗑️</span>
+            清除所有宠物
+          </button>
+        </div>
+        <div className="coming-soon">
+          <span className="coming-soon-icon">✨</span>
+          更多宠物即将加入
+        </div>
+        <div className="footer-hint">右键点击网页中的宠物可以删除</div>
+      </div>
     </div>
   );
 }
