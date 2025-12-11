@@ -20,7 +20,8 @@ export default defineConfig({
     name: "Browser-Pets",
     version: "0.1.0",
     description: "A simple pet game for the browser.",
-    permissions: ["storage"],
+    permissions: ["storage", "tabs", "scripting"],
+    host_permissions: ["<all_urls>"],
     options_ui: {
       page: "options.html",
       open_in_tab: true,

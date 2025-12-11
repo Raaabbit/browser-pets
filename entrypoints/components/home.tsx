@@ -11,24 +11,13 @@
 import { useState, useEffect } from "react";
 import Pet from "@/entrypoints/components/pet";
 import chickenAttrs from "@/assets/animals/chicken/attr.json";
+import type { PetData, StorageMode } from "@/types";
 
 const { petWidth, petHeight } = chickenAttrs;
 
-interface PetData {
-  id: string;
-  name: string;
-  img: string;
-  type: string; // 宠物类型：chicken, cat, dog, pig
-  left: number;
-  bottom: number;
-  direction: "left" | "right";
-}
-
 const Home = () => {
   const [pets, setPets] = useState<PetData[]>([]);
-  const [storageMode, setStorageMode] = useState<"global" | "per-site">(
-    "global"
-  );
+  const [storageMode, setStorageMode] = useState<StorageMode>("global");
 
   // 获取存储 key
   const getStorageKey = () => {
@@ -98,18 +87,36 @@ const Home = () => {
 
       // 监听存储模式变化
       if (changes["storage-mode"]) {
-        setStorageMode(changes["storage-mode"].newValue);
+        const newMode = changes["storage-mode"].newValue;
+        setStorageMode(newMode);
+        // 存储模式变化时，需要重新加载对应模式的宠物数据
+        // 这个会在 storageMode 的 useEffect 中处理
+        return;
       }
 
-      // 监听宠物数据变化（需要检查当前存储模式对应的 key）
-      const currentStorageKey = getStorageKey();
-      if (changes[currentStorageKey]) {
-        const newPets = changes[currentStorageKey].newValue;
-        if (newPets) {
-          setPets(newPets);
-        } else {
-          setPets([]);
-        }
+      // 监听宠物数据变化
+      // 检查全局存储
+      if (changes["global-pets"]) {
+        setStorageMode((currentMode) => {
+          if (currentMode === "global") {
+            const newPets = changes["global-pets"].newValue;
+            setPets(newPets || []);
+          }
+          return currentMode;
+        });
+      }
+
+      // 检查当前网站的存储
+      const currentOrigin = window.location.origin;
+      const siteStorageKey = `pets-${currentOrigin}`;
+      if (changes[siteStorageKey]) {
+        setStorageMode((currentMode) => {
+          if (currentMode === "per-site") {
+            const newPets = changes[siteStorageKey].newValue;
+            setPets(newPets || []);
+          }
+          return currentMode;
+        });
       }
     };
 
@@ -119,41 +126,57 @@ const Home = () => {
     return () => {
       browser.storage.onChanged.removeListener(handleAllChanges);
     };
-  }, [storageMode]);
+  }, []); // 空依赖数组，使用函数形式更新状态
 
   useEffect(() => {
     const handleCreatePet = (event: Event) => {
-      const customEvent = event as CustomEvent;
-      const pet = customEvent.detail;
-      // 生成随机位置
-      const maxLeft = Math.max(0, window.innerWidth - petWidth);
-      const randomLeft = Math.random() * maxLeft;
-      const randomBottom = 0; // 底部对齐
-      const randomDirection = Math.random() < 0.5 ? "left" : "right";
+      try {
+        const customEvent = event as CustomEvent;
+        const pet = customEvent.detail;
 
-      // 创建新宠物，使用时间戳作为唯一 ID
-      const newPet: PetData = {
-        id: `pet-${Date.now()}-${Math.random()}`,
-        name: pet.name,
-        img: pet.img,
-        type: pet.name, // 使用 name 作为类型（chicken, cat, dog, pig）
-        left: randomLeft,
-        bottom: randomBottom,
-        direction: randomDirection,
-      };
+        if (!pet || !pet.name) {
+          console.warn("Invalid pet data received:", pet);
+          return;
+        }
 
-      setPets((prevPets) => {
-        const updatedPets = [...prevPets, newPet];
-        // 异步保存，不阻塞 UI
-        savePetsToStorage(updatedPets);
-        return updatedPets;
-      });
+        // 生成随机位置
+        const maxLeft = Math.max(0, window.innerWidth - petWidth);
+        const randomLeft = Math.random() * maxLeft;
+        const randomBottom = 0; // 底部对齐
+        const randomDirection = Math.random() < 0.5 ? "left" : "right";
+
+        // 创建新宠物，使用时间戳作为唯一 ID
+        const newPet: PetData = {
+          id: `pet-${Date.now()}-${Math.random()}`,
+          name: pet.name,
+          img: pet.img,
+          type: pet.name, // 使用 name 作为类型（chicken, cat, dog, pig）
+          left: randomLeft,
+          bottom: randomBottom,
+          direction: randomDirection,
+        };
+
+        setPets((prevPets) => {
+          const updatedPets = [...prevPets, newPet];
+          // 异步保存，不阻塞 UI
+          savePetsToStorage(updatedPets).catch((error) => {
+            console.error("Failed to save pet to storage:", error);
+          });
+          return updatedPets;
+        });
+      } catch (error) {
+        console.error("Error handling create-pet event:", error);
+      }
     };
 
     const handleReloadPets = () => {
-      loadStorageMode().then(() => {
-        loadPetsFromStorage();
-      });
+      loadStorageMode()
+        .then(() => {
+          return loadPetsFromStorage();
+        })
+        .catch((error) => {
+          console.error("Error reloading pets:", error);
+        });
     };
 
     // 在 document 上监听自定义事件
@@ -165,7 +188,7 @@ const Home = () => {
       document.removeEventListener("create-pet", handleCreatePet);
       document.removeEventListener("reload-pets", handleReloadPets);
     };
-  }, []);
+  }, []); // 空依赖数组，因为函数内部使用了 setPets 和 savePetsToStorage
 
   return (
     <div
@@ -194,7 +217,9 @@ const Home = () => {
               setPets((prevPets) => {
                 const updatedPets = prevPets.filter((p) => p.id !== pet.id);
                 // 异步保存，不阻塞 UI
-                savePetsToStorage(updatedPets);
+                savePetsToStorage(updatedPets).catch((error) => {
+                  console.error("Failed to save pets after deletion:", error);
+                });
                 return updatedPets;
               });
             }}

@@ -9,10 +9,11 @@
 
 import { useState, useEffect } from "react";
 import chicken from "@/assets/animals/chicken/stand.gif";
+import type { StorageMode, PetInfo, PetCategory } from "@/types";
 import "./App.css";
 
 // 宠物分类数据
-const petCategories = [
+const petCategories: PetCategory[] = [
   {
     id: "cat",
     name: "猫",
@@ -52,8 +53,6 @@ const allPets = [
   ...petCategories,
 ];
 
-type StorageMode = "global" | "per-site";
-
 function App() {
   const [clickedPet, setClickedPet] = useState<string | null>(null);
   const [storageMode, setStorageMode] = useState<StorageMode>("global");
@@ -87,23 +86,35 @@ function App() {
     });
   };
 
-  const handlePetClick = async (pet: {
-    name: string;
-    nameEn: string;
-    img: string;
-  }) => {
+  const handlePetClick = async (pet: PetInfo) => {
     try {
-      await browser.runtime.sendMessage({
+      setClickedPet(pet.nameEn);
+
+      const response = await browser.runtime.sendMessage({
         action: "create-pet",
         pet: {
           name: pet.nameEn,
           img: pet.img,
         },
       });
-      setClickedPet(pet.nameEn);
+
+      // 检查响应
+      if (response && !response.success) {
+        console.error("Failed to create pet:", response.error);
+        // 可以在这里显示错误提示给用户
+        alert(
+          `无法添加宠物：${
+            response.error || "未知错误"
+          }\n\n请确保已打开一个网页标签页。`
+        );
+      }
+
       setTimeout(() => setClickedPet(null), 500);
     } catch (error) {
-      console.log("Message sent to background");
+      console.error("Error sending create-pet message:", error);
+      // 显示用户友好的错误提示
+      alert("无法添加宠物，请确保已打开一个网页标签页。");
+      setClickedPet(null);
     }
   };
 
