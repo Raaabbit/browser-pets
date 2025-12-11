@@ -352,7 +352,6 @@ const Pet = ({
           zIndex: 9999,
           width: petWidth,
           height: petHeight,
-          transform: direction === "left" ? "scaleX(-1)" : "none",
           pointerEvents: "auto",
           cursor: isDragging ? "grabbing" : "grab",
           userSelect: "none",
@@ -368,7 +367,12 @@ const Pet = ({
           }
           alt="pet"
           className="pet-no-drag"
-          style={{ width: "100%", height: "100%", pointerEvents: "none" }}
+          style={{
+            width: "100%",
+            height: "100%",
+            pointerEvents: "none",
+            transform: direction === "left" ? "scaleX(-1)" : "none",
+          }}
         />
       </div>
     </Draggable>
