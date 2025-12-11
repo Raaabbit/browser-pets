@@ -9,7 +9,7 @@
 
 import { useState, useEffect } from "react";
 import chicken from "@/assets/animals/chicken/stand.gif";
-import type { StorageMode, PetInfo, PetCategory } from "@/types";
+import type { StorageMode, PetInfo, PetCategory, InitialPosition } from "@/types";
 import "./App.css";
 
 // 宠物分类数据
@@ -56,14 +56,18 @@ const allPets = [
 function App() {
   const [clickedPet, setClickedPet] = useState<string | null>(null);
   const [storageMode, setStorageMode] = useState<StorageMode>("global");
+  const [initialPosition, setInitialPosition] = useState<InitialPosition>("top");
   const [showSettings, setShowSettings] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("cat");
 
   // 加载设置
   useEffect(() => {
-    browser.storage.local.get("storage-mode").then((result) => {
+    browser.storage.local.get(["storage-mode", "initial-position"]).then((result) => {
       if (result["storage-mode"]) {
         setStorageMode(result["storage-mode"]);
+      }
+      if (result["initial-position"]) {
+        setInitialPosition(result["initial-position"]);
       }
     });
   }, []);
@@ -84,6 +88,12 @@ function App() {
         }
       });
     });
+  };
+
+  // 保存初始位置设置
+  const handleInitialPositionChange = async (position: InitialPosition) => {
+    setInitialPosition(position);
+    await browser.storage.local.set({ "initial-position": position });
   };
 
   const handlePetClick = async (pet: PetInfo) => {
@@ -254,6 +264,35 @@ function App() {
                       }
                     />
                     <span>按网站存储</span>
+                  </label>
+                </div>
+              </div>
+              <div className="settings-item">
+                <label className="settings-label">初始位置</label>
+                <div className="radio-group horizontal">
+                  <label className="radio-option">
+                    <input
+                      type="radio"
+                      name="initial-position"
+                      value="top"
+                      checked={initialPosition === "top"}
+                      onChange={(e) =>
+                        handleInitialPositionChange(e.target.value as InitialPosition)
+                      }
+                    />
+                    <span>顶部（落地）</span>
+                  </label>
+                  <label className="radio-option">
+                    <input
+                      type="radio"
+                      name="initial-position"
+                      value="bottom"
+                      checked={initialPosition === "bottom"}
+                      onChange={(e) =>
+                        handleInitialPositionChange(e.target.value as InitialPosition)
+                      }
+                    />
+                    <span>底部</span>
                   </label>
                 </div>
               </div>

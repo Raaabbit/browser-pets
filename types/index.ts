@@ -7,6 +7,9 @@
 // 存储模式类型
 export type StorageMode = "global" | "per-site";
 
+// 初始位置类型
+export type InitialPosition = "top" | "bottom";
+
 // 宠物数据类型
 export interface PetData {
   id: string;

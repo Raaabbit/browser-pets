@@ -11,13 +11,15 @@
 import { useState, useEffect } from "react";
 import Pet from "@/entrypoints/components/pet";
 import chickenAttrs from "@/assets/animals/chicken/attr.json";
-import type { PetData, StorageMode } from "@/types";
+import type { PetData, StorageMode, InitialPosition } from "@/types";
 
 const { petWidth, petHeight } = chickenAttrs;
 
 const Home = () => {
   const [pets, setPets] = useState<PetData[]>([]);
   const [storageMode, setStorageMode] = useState<StorageMode>("global");
+  const [initialPosition, setInitialPosition] =
+    useState<InitialPosition>("top");
 
   // 获取存储 key
   const getStorageKey = () => {
@@ -39,6 +41,18 @@ const Home = () => {
       }
     } catch (error) {
       console.error("Failed to load storage mode:", error);
+    }
+  };
+
+  // 加载初始位置设置
+  const loadInitialPosition = async () => {
+    try {
+      const result = await browser.storage.local.get("initial-position");
+      if (result["initial-position"]) {
+        setInitialPosition(result["initial-position"]);
+      }
+    } catch (error) {
+      console.error("Failed to load initial position:", error);
     }
   };
 
@@ -70,6 +84,7 @@ const Home = () => {
   // 初始化时加载设置和宠物
   useEffect(() => {
     loadStorageMode();
+    loadInitialPosition();
   }, []);
 
   // 当存储模式变化时重新加载宠物
@@ -92,6 +107,12 @@ const Home = () => {
         // 存储模式变化时，需要重新加载对应模式的宠物数据
         // 这个会在 storageMode 的 useEffect 中处理
         return;
+      }
+
+      // 监听初始位置变化
+      if (changes["initial-position"]) {
+        const newPosition = changes["initial-position"].newValue;
+        setInitialPosition(newPosition);
       }
 
       // 监听宠物数据变化
@@ -142,7 +163,11 @@ const Home = () => {
         // 生成随机位置
         const maxLeft = Math.max(0, window.innerWidth - petWidth);
         const randomLeft = Math.random() * maxLeft;
-        const randomBottom = 0; // 底部对齐
+        // 根据初始位置设置决定位置
+        const randomBottom =
+          initialPosition === "top"
+            ? window.innerHeight - petHeight // 顶部
+            : 0; // 底部
         const randomDirection = Math.random() < 0.5 ? "left" : "right";
 
         // 创建新宠物，使用时间戳作为唯一 ID

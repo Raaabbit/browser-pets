@@ -67,6 +67,22 @@ const Pet = ({
     y: window.innerHeight - initPosition.bottom - petHeight, // 转换为 top 坐标
   });
 
+  // 初始化时如果需要落地，启动落地动画
+  // 如果 bottom > 0，说明在顶部或半空，需要落地到底部
+  useEffect(() => {
+    if (initPosition.bottom > 0) {
+      // 记录初始移动状态（落地完成后应该开始移动）
+      wasMovingBeforeDragRef.current = true;
+      // 初始化时先不移动，等落地完成后再移动
+      setIsMoving(false);
+      // 延迟一小段时间再开始落地，让宠物先显示出来
+      const timer = setTimeout(() => {
+        setIsFalling(true);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [initPosition.bottom]);
+
   // 同步 draggablePosition 到 positionRef
   useEffect(() => {
     const bottom = window.innerHeight - draggablePosition.y - petHeight;
