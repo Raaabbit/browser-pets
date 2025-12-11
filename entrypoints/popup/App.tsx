@@ -9,6 +9,9 @@
 
 import { useState, useEffect } from "react";
 import chicken from "@/assets/animals/chicken/stand.gif";
+import akita from "@/assets/animals/akita/stand.gif";
+import blackDog from "@/assets/animals/black-dog/stand.gif";
+import whiteDog from "@/assets/animals/white-dog/stand.gif";
 import type {
   StorageMode,
   PetInfo,
@@ -19,24 +22,26 @@ import "./App.css";
 
 // 宠物分类数据
 const petCategories: PetCategory[] = [
-  {
-    id: "cat",
-    name: "猫",
-    pets: [
-      { name: "白猫", nameEn: "white-cat", img: chicken },
-      { name: "黑猫", nameEn: "black-cat", img: chicken },
-      { name: "花猫", nameEn: "calico-cat", img: chicken },
-      { name: "橘猫", nameEn: "orange-cat", img: chicken },
-    ],
-  },
+  // {
+  //   id: "cat",
+  //   name: "猫",
+  //   pets: [
+  //     { name: "白猫", nameEn: "white-cat", img: chicken },
+  //     { name: "黑猫", nameEn: "black-cat", img: chicken },
+  //     { name: "花猫", nameEn: "calico-cat", img: chicken },
+  //     { name: "橘猫", nameEn: "orange-cat", img: chicken },
+  //   ],
+  // },
   {
     id: "dog",
     name: "狗",
     pets: [
-      { name: "金毛", nameEn: "golden-retriever", img: chicken },
-      { name: "柯基", nameEn: "corgi", img: chicken },
-      { name: "柴犬", nameEn: "shiba", img: chicken },
-      { name: "田园犬", nameEn: "mixed-dog", img: chicken },
+      { name: "黑狗", nameEn: "black-dog", img: blackDog },
+      { name: "白狗", nameEn: "white-dog", img: whiteDog },
+      { name: "秋田犬", nameEn: "akita", img: akita },
+      // { name: "金毛", nameEn: "golden-retriever", img: chicken },
+      // { name: "柯基", nameEn: "corgi", img: chicken },
+      // { name: "柴犬", nameEn: "shiba", img: chicken },
     ],
   },
   {
@@ -44,7 +49,7 @@ const petCategories: PetCategory[] = [
     name: "鸟",
     pets: [
       { name: "鸡", nameEn: "chicken", img: chicken },
-      { name: "柯尔鸭", nameEn: "call-duck", img: chicken },
+      // { name: "柯尔鸭", nameEn: "call-duck", img: chicken },
     ],
   },
 ];
@@ -64,7 +69,7 @@ function App() {
   const [initialPosition, setInitialPosition] =
     useState<InitialPosition>("top");
   const [showSettings, setShowSettings] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string>("cat");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   // 加载设置
   useEffect(() => {

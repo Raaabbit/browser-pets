@@ -5,16 +5,47 @@ import walkChicken from "@/assets/animals/chicken/walk.gif";
 import standChicken from "@/assets/animals/chicken/stand.gif";
 import chickenAttrs from "@/assets/animals/chicken/attr.json";
 
-const { petWidth, petHeight, speed } = chickenAttrs;
+import walkAkita from "@/assets/animals/akita/walk.gif";
+import standAkita from "@/assets/animals/akita/stand.gif";
+import akitaAttrs from "@/assets/animals/akita/attr.json";
 
-// 根据宠物类型获取资源（暂时所有宠物都使用 chicken 的资源）
+import walkBlackDog from "@/assets/animals/black-dog/walk.gif";
+import standBlackDog from "@/assets/animals/black-dog/stand.gif";
+import blackDogAttrs from "@/assets/animals/black-dog/attr.json";
+
+import walkWhiteDog from "@/assets/animals/white-dog/walk.gif";
+import standWhiteDog from "@/assets/animals/white-dog/stand.gif";
+import whiteDogAttrs from "@/assets/animals/white-dog/attr.json";
+
+// 根据宠物类型获取资源
 const getPetResources = (petType: string) => {
-  // 暂时所有宠物都使用 chicken 的资源
-  return {
-    walk: walkChicken,
-    stand: standChicken,
-    attrs: chickenAttrs,
-  };
+  switch (petType) {
+    case "akita":
+      return {
+        walk: walkAkita,
+        stand: standAkita,
+        attrs: akitaAttrs,
+      };
+    case "black-dog":
+      return {
+        walk: walkBlackDog,
+        stand: standBlackDog,
+        attrs: blackDogAttrs,
+      };
+    case "white-dog":
+      return {
+        walk: walkWhiteDog,
+        stand: standWhiteDog,
+        attrs: whiteDogAttrs,
+      };
+    case "chicken":
+    default:
+      return {
+        walk: walkChicken,
+        stand: standChicken,
+        attrs: chickenAttrs,
+      };
+  }
 };
 
 const Pet = ({
@@ -37,6 +68,7 @@ const Pet = ({
   onPositionChange?: (position: { left: number; bottom: number }) => void;
 }) => {
   const resources = getPetResources(petType);
+  const { petWidth, petHeight, speed } = resources.attrs;
   // 移动方向
   const [direction, setDirection] = useState(initPosition.direction); // left | right
   const [isMoving, setIsMoving] = useState(true);
