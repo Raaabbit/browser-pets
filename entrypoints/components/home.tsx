@@ -223,6 +223,27 @@ const Home = () => {
                 return updatedPets;
               });
             }}
+            onPositionChange={(newPosition) => {
+              setPets((prevPets) => {
+                const updatedPets = prevPets.map((p) =>
+                  p.id === pet.id
+                    ? {
+                        ...p,
+                        left: newPosition.left,
+                        bottom: newPosition.bottom,
+                      }
+                    : p
+                );
+                // 异步保存，不阻塞 UI
+                savePetsToStorage(updatedPets).catch((error) => {
+                  console.error(
+                    "Failed to save pets after position change:",
+                    error
+                  );
+                });
+                return updatedPets;
+              });
+            }}
           />
         );
       })}
