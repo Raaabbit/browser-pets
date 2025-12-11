@@ -9,7 +9,12 @@
 
 import { useState, useEffect } from "react";
 import chicken from "@/assets/animals/chicken/stand.gif";
-import type { StorageMode, PetInfo, PetCategory, InitialPosition } from "@/types";
+import type {
+  StorageMode,
+  PetInfo,
+  PetCategory,
+  InitialPosition,
+} from "@/types";
 import "./App.css";
 
 // 宠物分类数据
@@ -56,20 +61,23 @@ const allPets = [
 function App() {
   const [clickedPet, setClickedPet] = useState<string | null>(null);
   const [storageMode, setStorageMode] = useState<StorageMode>("global");
-  const [initialPosition, setInitialPosition] = useState<InitialPosition>("top");
+  const [initialPosition, setInitialPosition] =
+    useState<InitialPosition>("top");
   const [showSettings, setShowSettings] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("cat");
 
   // 加载设置
   useEffect(() => {
-    browser.storage.local.get(["storage-mode", "initial-position"]).then((result) => {
-      if (result["storage-mode"]) {
-        setStorageMode(result["storage-mode"]);
-      }
-      if (result["initial-position"]) {
-        setInitialPosition(result["initial-position"]);
-      }
-    });
+    browser.storage.local
+      .get(["storage-mode", "initial-position"])
+      .then((result) => {
+        if (result["storage-mode"]) {
+          setStorageMode(result["storage-mode"]);
+        }
+        if (result["initial-position"]) {
+          setInitialPosition(result["initial-position"]);
+        }
+      });
   }, []);
 
   // 保存设置
@@ -187,7 +195,7 @@ function App() {
           <span className="title-icon">🐾</span>
           Browser Pets
         </h1>
-        <p className="popup-subtitle">点击添加宠物</p>
+        <p className="popup-subtitle">点击，为你添加可爱宠物</p>
       </div>
 
       <div className="category-tabs">
@@ -225,7 +233,8 @@ function App() {
       </div>
 
       <div className="popup-footer">
-        <div className="settings-section">
+        {/* 暂时隐藏设置功能 */}
+        {/* <div className="settings-section">
           <div
             className="settings-toggle"
             onClick={() => setShowSettings(!showSettings)}
@@ -277,7 +286,9 @@ function App() {
                       value="top"
                       checked={initialPosition === "top"}
                       onChange={(e) =>
-                        handleInitialPositionChange(e.target.value as InitialPosition)
+                        handleInitialPositionChange(
+                          e.target.value as InitialPosition
+                        )
                       }
                     />
                     <span>顶部（落地）</span>
@@ -289,7 +300,9 @@ function App() {
                       value="bottom"
                       checked={initialPosition === "bottom"}
                       onChange={(e) =>
-                        handleInitialPositionChange(e.target.value as InitialPosition)
+                        handleInitialPositionChange(
+                          e.target.value as InitialPosition
+                        )
                       }
                     />
                     <span>底部</span>
@@ -298,7 +311,7 @@ function App() {
               </div>
             </div>
           )}
-        </div>
+        </div> */}
         <div className="action-buttons">
           <button className="clear-all-btn" onClick={handleClearAllPets}>
             <span className="clear-icon">🗑️</span>
@@ -309,7 +322,7 @@ function App() {
           <span className="coming-soon-icon">✨</span>
           更多宠物即将加入
         </div>
-        <div className="footer-hint">右键点击网页中的宠物可以删除</div>
+        <div className="footer-hint">长按拖动宠物，右键点击可删除</div>
       </div>
     </div>
   );
