@@ -150,7 +150,7 @@ const Home = () => {
   }, []); // 空依赖数组，使用函数形式更新状态
 
   useEffect(() => {
-    const handleCreatePet = (event: Event) => {
+    const handleCreatePet = async (event: Event) => {
       try {
         const customEvent = event as CustomEvent;
         const pet = customEvent.detail;
@@ -160,12 +160,16 @@ const Home = () => {
           return;
         }
 
+        // 实时读取初始位置设置，而不是依赖状态（避免闭包问题）
+        const result = await browser.storage.local.get("initial-position");
+        const currentInitialPosition = result["initial-position"] || "top";
+
         // 生成随机位置
         const maxLeft = Math.max(0, window.innerWidth - petWidth);
         const randomLeft = Math.random() * maxLeft;
         // 根据初始位置设置决定位置
         const randomBottom =
-          initialPosition === "top"
+          currentInitialPosition === "top"
             ? window.innerHeight - petHeight // 顶部
             : 0; // 底部
         const randomDirection = Math.random() < 0.5 ? "left" : "right";
