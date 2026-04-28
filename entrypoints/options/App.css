@@ -1,11 +1,18 @@
+@import "../shared/doodle-ui.css";
+
 .options-container {
   width: 100%;
   min-height: 100vh;
   height: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--doodle-paper);
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(58, 52, 44, 0.06) 1px,
+    transparent 0
+  );
+  background-size: 18px 18px;
+  color: var(--doodle-ink);
+  font-family: var(--doodle-font);
   display: flex;
   flex-direction: column;
 }
@@ -13,8 +20,8 @@
 .options-header {
   padding: 48px 40px 32px;
   text-align: center;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  background: var(--doodle-paper-2);
+  border-bottom: 2px dashed var(--doodle-ink-faint);
 }
 
 .options-title {
@@ -25,17 +32,20 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
+  color: var(--doodle-ink);
+  letter-spacing: -0.02em;
 }
 
 .title-icon {
   font-size: 48px;
+  filter: drop-shadow(1px 1px 0 var(--doodle-line));
 }
 
 .options-subtitle {
   margin: 0;
   font-size: 18px;
-  opacity: 0.9;
-  font-weight: 400;
+  color: var(--doodle-ink-muted);
+  font-weight: 500;
 }
 
 .options-content {
@@ -61,33 +71,34 @@
 }
 
 .intro-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 16px;
+  background: var(--doodle-card);
+  border: 2px solid var(--doodle-line);
+  border-radius: var(--doodle-radius);
   padding: 32px;
-  color: #333;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  color: var(--doodle-ink);
+  box-shadow: var(--doodle-shadow);
 }
 
 .intro-title {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0 0 16px 0;
-  color: #2d3748;
-  border-bottom: 2px solid #667eea;
+  color: var(--doodle-ink);
+  border-bottom: 2px dashed var(--doodle-accent-soft);
   padding-bottom: 12px;
 }
 
 .intro-text {
   font-size: 16px;
   line-height: 1.8;
-  color: #4a5568;
+  color: var(--doodle-ink-muted);
   margin: 0;
 }
 
 .intro-list {
   font-size: 16px;
   line-height: 2;
-  color: #4a5568;
+  color: var(--doodle-ink-muted);
   margin: 0;
   padding-left: 24px;
 }

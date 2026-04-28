@@ -1,19 +1,28 @@
+@import "../shared/doodle-ui.css";
+
 .popup-container {
   width: 420px;
   min-height: 400px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
+  background-color: var(--doodle-paper);
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(58, 52, 44, 0.06) 1px,
+    transparent 0
+  );
+  background-size: 16px 16px;
+  color: var(--doodle-ink);
   display: flex;
   flex-direction: column;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--doodle-font);
+  border: 2px solid var(--doodle-line);
+  box-sizing: border-box;
 }
 
 .popup-header {
   padding: 20px 20px 12px;
   text-align: center;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  background: var(--doodle-paper-2);
+  border-bottom: 2px dashed var(--doodle-ink-faint);
 }
 
 .popup-title {
@@ -24,25 +33,28 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
+  color: var(--doodle-ink);
+  cursor: pointer;
 }
 
 .title-icon {
   font-size: 24px;
+  filter: drop-shadow(1px 1px 0 var(--doodle-line));
 }
 
 .popup-subtitle {
   margin: 0;
   font-size: 12px;
-  opacity: 0.9;
-  font-weight: 400;
+  color: var(--doodle-ink-muted);
+  font-weight: 500;
 }
 
 .category-tabs {
   display: flex;
   gap: 8px;
   padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  border-bottom: 2px dashed var(--doodle-ink-faint);
 }
 
 .category-tab {
@@ -52,23 +64,27 @@
   justify-content: center;
   gap: 6px;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 8px;
-  color: #ffffff;
+  background: var(--doodle-card);
+  border: 2px solid var(--doodle-line);
+  border-radius: var(--doodle-radius-sm);
+  color: var(--doodle-ink);
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: transform 0.15s, box-shadow 0.15s;
   font-family: inherit;
+  font-weight: 600;
+  box-shadow: 2px 2px 0 var(--doodle-line);
 }
 
 .category-tab:hover {
-  background: rgba(255, 255, 255, 0.15);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--doodle-line);
 }
 
 .category-tab.active {
-  background: rgba(255, 255, 255, 0.25);
-  font-weight: 600;
+  background: var(--doodle-accent-soft);
+  color: var(--doodle-ink);
+  font-weight: 700;
 }
 
 .category-emoji {
@@ -97,20 +113,21 @@
 .pet-card {
   flex: 0 0 auto;
   width: 120px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
+  background: var(--doodle-card);
+  border: 2px solid var(--doodle-line);
+  border-radius: var(--doodle-radius-sm);
   padding: 12px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: var(--doodle-shadow);
   text-align: center;
-  color: #333;
+  color: var(--doodle-ink);
 }
 
 .pet-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
-  background: #ffffff;
+  transform: translate(-2px, -3px);
+  box-shadow: 5px 5px 0 var(--doodle-line);
+  background: #fff;
 }
 
 .pet-card:active {
@@ -145,8 +162,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  border-radius: 10px;
+  background: var(--doodle-paper-2);
+  border: 2px solid var(--doodle-line);
+  border-radius: 10px 14px 8px 12px;
   padding: 6px;
 }
 
@@ -159,32 +177,34 @@
 
 .pet-name {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   margin-top: 8px;
-  color: #2d3748;
+  color: var(--doodle-ink);
 }
 
 .pet-hint {
   font-size: 10px;
-  color: #718096;
+  color: var(--doodle-ink-muted);
   margin-top: 4px;
-  opacity: 0.7;
+  opacity: 0.85;
 }
 
 .popup-footer {
   padding: 12px 16px;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--doodle-paper-2);
+  border-top: 2px dashed var(--doodle-ink-faint);
   text-align: center;
 }
 
 .coming-soon {
   font-size: 13px;
-  opacity: 0.9;
+  color: var(--doodle-ink-muted);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   margin-bottom: 8px;
+  font-weight: 500;
 }
 
 .coming-soon-icon {
@@ -193,8 +213,8 @@
 
 .footer-hint {
   font-size: 11px;
-  opacity: 0.7;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--doodle-ink-faint);
+  font-weight: 500;
 }
 
 .settings-section {
@@ -212,21 +232,22 @@
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  background: rgba(239, 68, 68, 0.9);
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
+  background: #f5d4cf;
+  color: var(--doodle-ink);
+  border: 2px solid var(--doodle-line);
+  border-radius: var(--doodle-radius-sm);
   cursor: pointer;
   font-size: 12px;
-  font-weight: 500;
-  transition: all 0.2s;
+  font-weight: 700;
+  transition: transform 0.15s, box-shadow 0.15s;
   font-family: inherit;
+  box-shadow: 2px 2px 0 var(--doodle-line);
 }
 
 .clear-all-btn:hover {
-  background: rgba(239, 68, 68, 1);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+  background: #ebc4bd;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--doodle-line);
 }
 
 .clear-all-btn:active {
@@ -248,10 +269,11 @@
   transition: background 0.2s;
   font-size: 13px;
   user-select: none;
+  color: var(--doodle-ink);
 }
 
 .settings-toggle:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--doodle-paper-2);
 }
 
 .settings-icon {
@@ -271,8 +293,10 @@
 .settings-content {
   margin-top: 8px;
   padding: 12px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
+  background: var(--doodle-card);
+  border: 2px solid var(--doodle-line);
+  border-radius: var(--doodle-radius-sm);
+  box-shadow: var(--doodle-shadow);
   animation: slideDown 0.3s ease-out;
 }
 
@@ -294,9 +318,9 @@
 .settings-label {
   display: block;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 8px;
-  opacity: 0.9;
+  color: var(--doodle-ink);
 }
 
 .radio-group {
@@ -320,16 +344,17 @@
   border-radius: 6px;
   transition: background 0.2s;
   font-size: 12px;
+  color: var(--doodle-ink);
 }
 
 .radio-option:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--doodle-paper-2);
 }
 
 .radio-option input[type="radio"] {
   margin: 0;
   cursor: pointer;
-  accent-color: #ffffff;
+  accent-color: var(--doodle-mint);
 }
 
 .radio-option span {

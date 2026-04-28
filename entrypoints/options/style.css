@@ -11,7 +11,10 @@ body {
   width: 100%;
   min-height: 100vh;
   height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "Noto Sans SC", sans-serif;
+  background: #fbf6ee;
+  color: #3a342c;
   overflow-x: hidden;
   /* 隐藏滚动条 */
   scrollbar-width: none; /* Firefox */

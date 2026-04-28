@@ -1,0 +1,21 @@
+/* 简约手绘 / 卡通：暖纸色 + 描边，避免科技感渐变 */
+
+:root {
+  /* 纸与墨 */
+  --doodle-paper: #fbf6ee;
+  --doodle-paper-2: #f3ebe0;
+  --doodle-ink: #3a342c;
+  --doodle-ink-muted: #6b6358;
+  --doodle-ink-faint: #9a8f82;
+  /* 点缀：陶土、薄荷，偏手工 rather than 霓虹 */
+  --doodle-accent: #c97b63;
+  --doodle-accent-soft: #e8c4b8;
+  --doodle-mint: #7d9a84;
+  --doodle-line: #4a4036;
+  --doodle-card: #fffef8;
+  --doodle-shadow: 3px 3px 0 var(--doodle-line);
+  --doodle-radius: 16px 18px 14px 20px;
+  --doodle-radius-sm: 10px 12px 8px 11px;
+  --doodle-font: "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans SC", sans-serif;
+}
